@@ -112,6 +112,7 @@ public:
     (log_to_stderr ? std::cerr : std::cout) << msg;
     if (log_file_ != nullptr) {
       fwrite(msg.c_str(), 1, msg.length(), log_file_);
+      fflush(log_file_);
     }
     return *this;
   }
