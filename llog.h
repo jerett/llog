@@ -6,8 +6,8 @@
 #define LLOG_LLOG_H
 
 #include <string>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 #include <mutex>
 #include <memory>
 
@@ -17,7 +17,17 @@
 #   define ELPP_OS_WINDOWS 1
 #endif
 
-#define LOG(LEVEL) ins::Log(__FILE__, __FUNCTION__, __LINE__ ,LEVEL)
+#define LOG(level) \
+  if (level >= ins::Configuration::GetInstance().log_level()) \
+    ins::Log(__FILE__, __FUNCTION__, __LINE__ , level) \
+
+#define LOG_IF(level, expression) \
+  if (true == expression) \
+    LOG(level)
+
+#define CHECK(expression) \
+  if (false == (expression)) \
+    ins::FatalLog(#expression, __FILE__, __FUNCTION__, __LINE__)
 
 namespace ins {
 class LLogMessage;
@@ -32,6 +42,21 @@ enum LogLevel {
 };
 
 namespace ins{
+
+LLogMessage Log( const char *file,
+                 const char *function,
+                 int line,
+                 LogLevel level);
+
+LLogMessage FatalLog(const char *expression,
+                     const char *file,
+                     const char *function,
+                     int line);
+//ins::LLogMessage Log_if(bool condition,
+//                        const char *file,
+//                        const char *function,
+//                        int line,
+//                        LogLevel level);
 
 class Configuration {
 public:
@@ -61,11 +86,6 @@ private:
   std::string log_file_;
   LogLevel  log_level_ = DEBUG;
 };
-
-ins::LLogMessage Log( const char *file,
-                      const char *function,
-                      int line,
-                      LogLevel level);
 
 class LLog {
 public:

@@ -9,9 +9,10 @@ namespace ins{
 
 LLogMessage::~LLogMessage() {
   oss_ << '\n';
-  if (level_ >= Configuration::GetInstance().log_level()) {
-    LLog::Instance() << oss_.str();
-  }
+//  if (level_ >= Configuration::GetInstance().log_level()) {
+  LLog::Instance() << oss_.str();
+//  }
+  if (fatal_) exit(EXIT_FAILURE);
 }
 
 }
