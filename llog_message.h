@@ -28,7 +28,6 @@ public:
     auto now = std::chrono::system_clock::now();
     auto log_time_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
     auto now_c = std::chrono::system_clock::to_time_t(log_time_ms);
-    struct tm *local_tm = std::localtime(&now_c);
     auto time = std::put_time(std::localtime(&now_c), "%m-%d %T");
     auto id = std::this_thread::get_id();
     oss_ << '[' << id << ']';

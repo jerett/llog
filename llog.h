@@ -35,7 +35,7 @@ extern bool log_to_stderr;
 }
 
 enum LogLevel {
-  DEBUG = 0,
+  VERBOSE = 0,
   INFO,
   WARNING,
   ERROR,
@@ -84,7 +84,7 @@ private:
 
 private:
   std::string log_file_;
-  LogLevel  log_level_ = DEBUG;
+  LogLevel  log_level_ = VERBOSE;
 };
 
 class LLog {

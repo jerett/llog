@@ -8,7 +8,7 @@
 ```
 #include "llog.h"
 LOG(INFO) << "lllog";
-LOG_IF(DEBUG, 1 > 0) << "expression log";
+LOG_IF(VERBOSE, 1 > 0) << "expression log";
 ```
 ###configuration
 * default set to STDOUT, you can switch to STDERR by set 

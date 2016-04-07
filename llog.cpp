@@ -30,7 +30,7 @@ bool Configuration::Configure(int type, const std::string &val) noexcept {
       return LLog::Instance().DupLogToFile(val);
     }
     case LOG_LEVEL:{
-      if (val == "DEBUG") log_level_ = DEBUG;
+      if (val == "VERBOSE") log_level_ = VERBOSE;
       if (val == "INFO") log_level_ = INFO;
       if (val == "WARNING") log_level_ = WARNING;
       if (val == "ERROR") log_level_ = ERROR;
@@ -43,6 +43,9 @@ bool Configuration::Configure(int type, const std::string &val) noexcept {
 
 bool LLog::DupLogToFile(const std::string &file) noexcept {
   log_file_ = fopen(file.c_str(), "a+");
+  if (log_file_ == nullptr) {
+    std::cerr << " open log file err........" << std::endl;
+  }
   return log_file_ == nullptr;
 }
 
