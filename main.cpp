@@ -1,5 +1,5 @@
 
-#include "llog.h"
+#include "llog/llog.h"
 #include <thread>
 
 void test() {
@@ -17,7 +17,7 @@ void test() {
 void count() {
   for (int i = 0 ; i < 99; ++i) {
     LOG(INFO) << i;
-    CHECK(i < 90) << " meet 90 first i:" << i;
+//    CHECK(i < 90) << " meet 90 first i:" << i;
   }
 };
 
