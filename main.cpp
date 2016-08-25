@@ -29,6 +29,7 @@ int main() {
   count_thread1.join();
   count_thread2.join();
 //  test();
+//  ins::LLogMessage("a.txt", "aaa", 1, 1) << "Aaa";
   return 0;
 }
 

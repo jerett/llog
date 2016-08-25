@@ -28,11 +28,13 @@ public:
     auto now = std::chrono::system_clock::now();
     auto log_time_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
     auto now_c = std::chrono::system_clock::to_time_t(log_time_ms);
-    auto time = std::put_time(std::localtime(&now_c), "%m-%d %T");
+    auto local_time = std::localtime(&now_c);
+    char time_str[64];
+    strftime(time_str, sizeof(time_str), "%m-%d %T", local_time);
     auto id = std::this_thread::get_id();
     oss_ << '[' << id << ']';
     oss_ << '[' << level_description[level];
-    oss_ << ' ' << time << '.' << log_time_ms.time_since_epoch().count()%1000;
+    oss_ << ' ' << time_str << '.' << log_time_ms.time_since_epoch().count()%1000;
 
     auto pos = file.find_last_of('/');
     if (pos != std::string::npos) {
@@ -52,12 +54,13 @@ public:
     auto now = std::chrono::system_clock::now();
     auto log_time_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
     auto now_c = std::chrono::system_clock::to_time_t(log_time_ms);
-    struct tm *local_tm = std::localtime(&now_c);
-    auto time = std::put_time(std::localtime(&now_c), "%m-%d %T");
+    auto local_time = std::localtime(&now_c);
+    char time_str[64];
+    strftime(time_str, sizeof(time_str), "%m-%d %T", local_time);
     auto id = std::this_thread::get_id();
     oss_ << '[' << id << ']';
     oss_ << '[' << "Check failed (" << expression << ')';
-    oss_ << ' ' << time << '.' << log_time_ms.time_since_epoch().count()%1000;
+    oss_ << ' ' << time_str << '.' << log_time_ms.time_since_epoch().count()%1000;
 
     auto pos = file.find_last_of('/');
     if (pos != std::string::npos) {
@@ -71,14 +74,19 @@ public:
   }
 
   LLogMessage(const LLogMessage&) = delete;
-  LLogMessage(LLogMessage&&) = default;
-
+  LLogMessage(LLogMessage &&rhs) = delete;
+  LLogMessage& operator=(const LLogMessage&) = delete;
+  LLogMessage& operator=(LLogMessage&&) = delete;
   ~LLogMessage();
 
   template <typename T>
   inline LLogMessage& operator<<(const T &msg) {
     oss_ << msg;
     return *this;
+  }
+
+  std::ostringstream& oss() noexcept {
+    return oss_;
   }
 
 private:

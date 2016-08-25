@@ -10,20 +10,6 @@ namespace ins{
 //}
 bool log_to_stderr = false;
 
-LLogMessage Log( const char *file,
-                 const char *function,
-                 int line,
-                 LogLevel level) {
-  return ins::LLogMessage(file, function, line, level);
-}
-
-LLogMessage FatalLog(const char *expression,
-                const char *file,
-                const char *function,
-                int line) {
-  return ins::LLogMessage(expression, file, function, line);
-}
-
 bool Configuration::Configure(int type, const std::string &val) noexcept {
   switch (type) {
     case LOG_FILE:{

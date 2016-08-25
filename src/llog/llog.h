@@ -19,15 +19,17 @@
 
 #define LOG(level) \
   if (level >= ins::Configuration::GetInstance().log_level()) \
-    ins::Log(__FILE__, __FUNCTION__, __LINE__ , level) \
+      ins::LLogMessage(__FILE__, __FUNCTION__, __LINE__, level)
 
 #define LOG_IF(level, expression) \
-  if (true == expression) \
-    LOG(level)
+  if (level >= ins::Configuration::GetInstance().log_level() && true == expression) \
+      ins::LLogMessage(__FILE__, __FUNCTION__, __LINE__, level)
+//    LOG(level)
 
 #define CHECK(expression) \
   if (false == (expression)) \
-    ins::FatalLog(#expression, __FILE__, __FUNCTION__, __LINE__)
+      ins::LLogMessage(#expression, __FILE__ , __FUNCTION__, __LINE__)
+//    ins::FatalLog(#expression, __FILE__, __FUNCTION__, __LINE__)
 
 namespace ins {
 class LLogMessage;
@@ -42,21 +44,6 @@ enum LogLevel {
 };
 
 namespace ins{
-
-LLogMessage Log( const char *file,
-                 const char *function,
-                 int line,
-                 LogLevel level);
-
-LLogMessage FatalLog(const char *expression,
-                     const char *file,
-                     const char *function,
-                     int line);
-//ins::LLogMessage Log_if(bool condition,
-//                        const char *file,
-//                        const char *function,
-//                        int line,
-//                        LogLevel level);
 
 class Configuration {
 public:
