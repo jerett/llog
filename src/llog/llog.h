@@ -13,6 +13,7 @@
 
 #include "llog_message.h"
 
+
 #if defined(_WIN32) || defined(_WIN64)
 #   define ELPP_OS_WINDOWS 1
 #endif
@@ -35,6 +36,11 @@ namespace ins {
 class LLogMessage;
 extern bool log_to_stderr;
 }
+
+#undef VERBOSE
+#undef INFO
+#undef WARNING
+#undef ERROR
 
 enum LogLevel {
   VERBOSE = 0,
