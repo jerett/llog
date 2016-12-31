@@ -32,6 +32,10 @@
       ins::LLogMessage(#expression, __FILE__ , __FUNCTION__, __LINE__)
 //    ins::FatalLog(#expression, __FILE__, __FUNCTION__, __LINE__)
 
+#define TimedBlock(obj, tag) \
+  ins::PerformanceTrackingObj obj(tag);
+  
+
 namespace ins {
 class LLogMessage;
 extern bool log_to_stderr;
@@ -99,9 +103,9 @@ public:
   LLog(LLog&&) = delete;
 
   inline LLog& operator<<(const std::string &msg) {
-#ifdef ELPP_OS_WINDOWS
+#if _WIN32
     std::lock_guard<std::mutex> lck(mtx_);
-#endif
+#endif // _WIN3
     fwrite(msg.c_str(), 1, msg.length(), log_to_stderr ? stderr : stdout);
     if (log_file_ != nullptr) {
       fwrite(msg.c_str(), 1, msg.length(), log_file_);
@@ -113,9 +117,40 @@ public:
 private:
   LLog() {}
   FILE *log_file_ = nullptr;
-#ifdef ELPP_OS_WINDOWS
+#if _WIN32
   std::mutex mtx_;
 #endif
+};
+
+/*############Util Function#####################*/
+class Timer {
+public:
+  Timer() noexcept : now_(std::chrono::steady_clock::now()) { ; }
+  ~Timer() noexcept = default;
+
+  int64_t Pass() const {
+    auto pass = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now_).count();
+    return pass;
+  }
+
+  void Reset() {
+    now_ = std::chrono::steady_clock::now();
+  }
+
+private:
+  std::chrono::steady_clock::time_point now_;
+};
+
+class PerformanceTrackingObj {
+public:
+  PerformanceTrackingObj(const std::string &block_name) noexcept : block_name_(block_name) {}
+  ~PerformanceTrackingObj() noexcept {
+    LOG(INFO) << "[" << block_name_ << "]" << " in [" << timer.Pass() << " ms]";
+  }
+
+private:
+  std::string block_name_;
+  Timer timer;
 };
 
 }
